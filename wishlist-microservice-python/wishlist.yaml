@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  wishlist
+  namespace: myspace
+  labels:
+    app:  wishlist
+spec:
+  selector:
+    matchLabels:
+      app: wishlist
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  wishlist
+    spec:
+      containers:
+      - name:  wishlist
+        image:  tarunk0/wishlist:v1
+        ports:
+        - containerPort:  1003
+          name:  wishlist
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wishlist
+  namespace: myspace
+spec:
+  selector:
+    app: wishlist
+  type: ClusterIP
+  ports:
+  - name: wishlist
+    protocol: TCP
+    port: 1003
+    targetPort: 1003
+    

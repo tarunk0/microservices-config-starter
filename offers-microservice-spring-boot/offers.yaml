@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  shoe
+  namespace: myspace
+  labels:
+    app: offer
+spec:
+  selector:
+    matchLabels:
+      app: offer
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: offer
+    spec:
+      containers:
+      - name: offer
+        image:  tarunk0/offers:v1
+        ports:
+        - containerPort:  100
+          name: offer
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: offer
+  namespace: myspace
+spec:
+  selector:
+    app: offer
+  type: ClusterIP
+  ports:
+  - name: offer
+    protocol: TCP
+    port: 100   
+    targetPort: 100
+    
